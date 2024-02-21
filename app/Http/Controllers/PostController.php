@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -32,7 +32,7 @@ class PostController extends Controller
 
     //get posts
     public function index(){
-        $posts = $this->model->get();
+        $posts = $this->model->with('owner:id,name')->with('comments')->get();
 
         return response()->json($posts, 200);
     }
@@ -60,6 +60,12 @@ class PostController extends Controller
             ]);
         }
 
+        if (Gate::denies('auth-post', $post)) {
+            return response()->json([
+                'message' => 'not allowed'
+            ]);
+        }
+
         $post->delete();
 
         return response()->json([
@@ -69,11 +75,18 @@ class PostController extends Controller
 
     //update post
     public function update(PostRequest $request){
+
         $post = $this->model->find($request->id);
 
         if(!$post){
             return response()->json([
                 'message' => 'Post not found'
+            ]);
+        }
+
+        if (Gate::denies('auth-post', $post)) {
+            return response()->json([
+                'message' => 'not allowed'
             ]);
         }
 
