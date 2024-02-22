@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -13,10 +14,19 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout',[UserController::class,'logout']);
 
     Route::group(["prefix" => "posts", "controller" => PostController::class], function() {
+
         Route::post('/','store');
         Route::get('/','index');
         Route::get('/detail/{id}','show');
         Route::get('delete/{id}','destroy');
         Route::post('/update','update');
+
+        Route::group(['prefix' => 'comments',"controller" => CommentController::class],function(){
+            Route::post('/create','store');
+            Route::get('/delete/{id}','destroy');
+            Route::post('/update','update');
+        });
+
     });
+
 });
