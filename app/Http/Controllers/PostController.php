@@ -39,7 +39,7 @@ class PostController extends Controller
 
     //get detail post
     public function show($id){
-        $post = $this->model->find($id);
+        $post = $this->model->with('comments')->find($id);
 
         if($post){
             return response()->json($post, 200);
