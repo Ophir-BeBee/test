@@ -23,6 +23,14 @@ class CommentController extends Controller
     public function store(CommentRequest $request){
         $commentData = $this->changeCommentDataToArray($request);
 
+        $post = Post::find($request->post_id);
+
+        if(!$post){
+            return response()->json([
+                'message' => 'Post not found'
+            ]);
+        }
+
         $commentData = $this->model->create($commentData);
 
         $responseData = [
