@@ -26,7 +26,7 @@ class UserRegisterRequest extends FormRequest
             'name' => ['required','string'],
             'email' => ['required','string','email','unique:users,email'],
             'password' => ['required','string',Password::min(8)->letters()->numbers()->symbols()],
-            'confrimPassword' => ['required','string','same:password']
+            'confirmPassword' => ['required','string','same:password']
         ];
     }
 }
